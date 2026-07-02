@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peluchín Bot - Tienda de Peluches</title>
+    <!-- Tailwind CSS para diseño moderno y rápido -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts para una tipografía redondeada y tierna -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Iconos de Lucide (vía CDN de desarrollo para interactividad) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #fef2f2; /* Fondo rosa pastel muy suave */
+        }
+        /* Personalización de barra de desplazamiento */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fff1f2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #fda4af;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-700">
+
+    <!-- Encabezado de la página -->
+    <header class="bg-white border-b border-rose-100 py-4 px-6 sticky top-0 z-10 shadow-sm">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-rose-100 p-2.5 rounded-full text-rose-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-rose-600 tracking-wide">Peluchilandia</h1>
+                    <p class="text-xs text-rose-400">Tu rincón de abrazos suaves</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="hidden sm:inline-block bg-rose-50 text-rose-600 text-xs font-semibold px-3 py-1 rounded-full border border-rose-100">
+                    Envíos a todo el país 🚚
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-6xl w-full mx-auto p-4 md:p-6 flex-grow grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Sección del Chatbot (Ocupa 2 columnas en pantallas grandes) -->
+        <section class="lg:col-span-2 flex flex-col bg-white rounded-3xl shadow-xl border border-rose-50 overflow-hidden h-[600px] md:h-[700px]">
+            <!-- Encabezado del Chatbot -->
+            <div class="bg-gradient-to-r from-rose-400 to-pink-500 p-4 text-white flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <!-- Avatar de Peluchín (Un osito hecho en SVG) -->
+                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center border-2 border-pink-200 shadow-md">
+                            <svg viewBox="0 0 64 64" class="w-10 h-10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="18" cy="18" r="8" fill="#F43F5E"/>
+                                <circle cx="46" cy="18" r="8" fill="#F43F5E"/>
+                                <circle cx="32" cy="36" r="22" fill="#FDA4AF"/>
+                                <circle cx="32" cy="38" r="16" fill="#FFF"/>
+                                <circle cx="24" cy="30" r="2" fill="#1E293B"/>
+                                <circle cx="40" cy="30" r="2" fill="#1E293B"/>
+                                <ellipse cx="32" cy="36" rx="4" ry="3" fill="#F43F5E"/>
+                                <path d="M29 42 Q32 45 35 42" stroke="#F43F5E" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-lg">Peluchín Bot 🧸</h2>
+                        <p class="text-xs text-pink-100 flex items-center gap-1">
+                            <span>Asistente virtual activo</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <button onclick="reiniciarChat()" class="text-pink-100 hover:text-white transition p-1 hover:bg-white/10 rounded" title="Reiniciar chat">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Área de Mensajes del Chat -->
+            <div id="contenedor-mensajes" class="flex-grow p-4 overflow-y-auto space-y-4 bg-slate-50/50">
+                <!-- Los mensajes se insertarán aquí dinámicamente -->
+            </div>
+
+            <!-- Opciones Rápidas / Sugerencias de botones -->
+            <div class="px-4 py-2 border-t border-slate-100 bg-white flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-none">
+                <button onclick="enviarOpcion('Hello Kitty')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-sm font-semibold px-4 py-2 rounded-full border border-rose-100 transition-colors shrink-0">🐱 Hello Kitty</button>
+                <button onclick="enviarOpcion('Snoopy')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-sm font-semibold px-4 py-2 rounded-full border border-rose-100 transition-colors shrink-0">🐶 Snoopy</button>
+                <button onclick="enviarOpcion('Ositos')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-sm font-semibold px-4 py-2 rounded-full border border-rose-100 transition-colors shrink-0">🐻 Ositos</button>
+                <button onclick="enviarOpcion('Otros')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-sm font-semibold px-4 py-2 rounded-full border border-rose-100 transition-colors shrink-0">✨ Otros Peluches</button>
+                <button onclick="enviarOpcion('Envíos')" class="bg-slate-50 hover:bg-slate-100 text-slate-600 text-sm font-semibold px-4 py-2 rounded-full border border-slate-200 transition-colors shrink-0">🚚 Costos de Envío</button>
+            </div>
+
+            <!-- Entrada de Texto del Chat -->
+            <form id="formulario-chat" onsubmit="procesarEnvioFormulario(event)" class="p-3 border-t border-slate-100 bg-white flex items-center space-x-2">
+                <input type="text" id="input-usuario" placeholder="Pregúntame sobre Hello Kitty, Snoopy u ositos..." class="flex-grow bg-slate-50 border border-slate-200 rounded-full px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:bg-white transition-all">
+                <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white p-3 rounded-full shadow-md shadow-rose-200 transition-all active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                    </svg>
+                </button>
+            </form>
+        </section>
+
+        <!-- Sidebar / Carrito de Compras (Ocupa 1 columna) -->
+        <aside class="flex flex-col bg-white rounded-3xl shadow-xl border border-rose-50 overflow-hidden h-[600px] md:h-[700px]">
+            <!-- Encabezado del Carrito -->
+            <div class="bg-slate-800 p-4 text-white flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-rose-400">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    </svg>
+                    <h3 class="font-bold text-md">Tus Peluches Elegidos</h3>
+                </div>
+                <span id="contador-carrito" class="bg-rose-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+            </div>
+
+            <!-- Contenedor del Carrito de Compras -->
+            <div id="items-carrito" class="flex-grow p-4 overflow-y-auto space-y-3 bg-slate-50/30">
+                <!-- Estado vacío -->
+                <div id="carrito-vacio" class="h-full flex flex-col items-center justify-center text-center text-slate-400 py-10 space-y-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-slate-300">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z" />
+                    </svg>
+                    <p class="text-sm">Aún no has agregado peluches.</p>
+                    <p class="text-xs text-slate-400">¡Habla con Peluchín para descubrir modelos hermosos!</p>
+                </div>
+                <!-- Se poblará con JS -->
+            </div>
+
+            <!-- Resumen y Acción de Compra -->
+            <div class="p-4 border-t border-slate-100 bg-white space-y-3">
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-slate-500">Subtotal:</span>
+                    <span id="subtotal-carrito" class="font-bold text-slate-800">$0.00</span>
+                </div>
+                <div class="flex justify-between items-center text-sm border-b border-slate-100 pb-2">
+                    <span class="text-slate-500">Envío:</span>
+                    <span id="envio-carrito" class="font-bold text-slate-800">$0.00</span>
+                </div>
+                <div class="flex justify-between items-center text-base font-bold">
+                    <span class="text-slate-800">Total:</span>
+                    <span id="total-carrito" class="text-rose-600 text-lg">$0.00</span>
+                </div>
+
+                <button onclick="abrirModalCompra()" id="boton-finalizar" disabled class="w-full bg-slate-200 text-slate-400 py-3 rounded-xl font-bold transition-all flex items-center justify-center space-x-2 cursor-not-allowed">
+                    <span>Confirmar Pedido</span>
+                </button>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- Modal de Confirmación de Compra -->
+    <div id="modal-compra" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl p-6 border border-rose-50 space-y-6 relative animate-in fade-in zoom-in duration-200">
+            <!-- Botón Cerrar -->
+            <button onclick="cerrarModalCompra()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <div class="text-center space-y-2">
+                <div class="inline-flex bg-rose-50 text-rose-500 p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">¡Casi es tuyo!</h3>
+                <p class="text-sm text-slate-500">Completa tus datos para agendar la entrega de tus adorables compañeros de felpa.</p>
+            </div>
+
+            <!-- Formulario de Datos -->
+            <form onsubmit="finalizarPedido(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Tu Nombre</label>
+                    <input type="text" id="nombre-cliente" required placeholder="Escribe tu nombre completo" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:bg-white transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Ciudad de Entrega</label>
+                    <input type="text" id="ciudad-cliente" required placeholder="Ej. Quito, Guayaquil, etc." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:bg-white transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Método de Pago Preferido</label>
+                    <select id="pago-cliente" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:bg-white transition-all">
+                        <option value="Transferencia Bancaria">Transferencia Bancaria / Depósito</option>
+                        <option value="Efectivo en contraentrega">Efectivo contra-entrega (Sujeto a ciudad)</option>
+                        <option value="Tarjeta de Crédito">Tarjeta de Crédito / Débito</option>
+                    </select>
+                </div>
+
+                <div class="bg-rose-50 border border-rose-100 p-3.5 rounded-xl flex items-start space-x-2 text-xs text-rose-700 leading-relaxed">
+                    <span class="mt-0.5">💬</span>
+                    <p>Al hacer clic en "Pedir por WhatsApp", Peluchín te redirigirá a un chat directo con tu recibo ya escrito. ¡Súper fácil!</p>
+                </div>
+
+                <button type="submit" class="w-full bg-rose-500 hover:bg-rose-600 active:scale-[0.98] text-white py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-rose-200 flex items-center justify-center space-x-2 text-sm">
+                    <span>🛍️ Generar Pedido por WhatsApp</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Éxito / Notificación -->
+    <div id="notificacion" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 max-w-sm bg-slate-900 text-white rounded-2xl p-4 shadow-xl flex items-center space-x-3 transform translate-y-24 opacity-0 transition-all duration-300 z-50">
+        <div class="bg-emerald-500 text-white p-1.5 rounded-full" id="notificacion-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+        </div>
+        <p id="notificacion-texto" class="text-xs font-medium"></p>
+    </div>
+
+    <footer class="bg-slate-50 border-t border-rose-100 py-6 text-center text-xs text-slate-400 mt-6">
+        <div class="max-w-6xl mx-auto px-4 space-y-2">
+            <p>🐾 Diseñado con amor por Peluchilandia 2026. Todos los derechos reservados.</p>
+            <p class="text-[10px]">Las imágenes y marcas mencionadas son propiedad de sus respectivos creadores, utilizadas con fines ilustrativos.</p>
+        </div>
+    </footer>
+
+    <!-- LÓGICA DEL CHATBOT Y COMPRAS -->
+    <script>
+        // --- BASE DE DATOS DE PRODUCTOS (CON DISEÑO SVG INTEGRADO PARA CADA MODELO) ---
+        const catalogo = {
+            kitty: [
+                {
+                    id: "kitty_classic",
+                    nombre: "Hello Kitty Clásica",
+                    categoria: "Hello Kitty",
+                    precio: 18.50,
+                    descripcion: "Vestido rojo icónico y listón brillante. 30 cm de suavidad premium.",
+                    colorIcono: "#F43F5E",
+                    svg: `<svg viewBox="0 0 100 100" class="w-16 h-16"><rect width="100" height="100" rx="20" fill="#FFE4E6"/><circle cx="50" cy="55" r="30" fill="white"/><ellipse cx="32" cy="50" rx="4" ry="6" fill="#1E293B"/><ellipse cx="68" cy="50" rx="4" ry="6" fill="#1E293B"/><ellipse cx="50" cy="58" rx="6" ry="4" fill="#FBBF24"/><path d="M72 32 C78 30, 80 40, 74 44 Z" fill="#F43F5E"/><circle cx="73" cy="38" r="5" fill="#FFE4E6"/><circle cx="28" cy="28" r="10" fill="white"/><circle cx="72" cy="28" r="10" fill="white"/></svg>`
+                },
+                {
+                    id: "kitty_sakura",
+                    nombre: "Hello Kitty Sakura",
+                    categoria: "Hello Kitty",
+                    precio: 22.00,
+                    descripcion: "Edición especial de primavera con detalles de flor de cerezo rosa.",
+                    colorIcono: "#F472B6",
+                    svg: `<svg viewBox="0 0 100 100" class="w-16 h-16"><rect width="100" height="100" rx="20" fill="#FDF2F8"/><circle cx="50" cy="55" r="30" fill="white"/><ellipse cx="32" cy="50" rx="4" ry="6" fill="#1E293B"/><ellipse cx="68" cy="50" rx="4" ry="6" fill="#1E293B"/><ellipse cx="50" cy="58" rx="6" ry="4" fill="#FBBF24"/><path d="M72 32 C78 30, 80 40, 74 44 Z" fill="#F472B6"/><circle cx="28" cy="28" r="10" fill="white"/><circle cx="72" cy="28" r="10" fill="white"/><circle cx="50" cy="35" r="4" fill="#F472B6"/></svg>`
+                }
+            ],
+            snoopy: [
+                {
+                    id: "snoopy_classic",
+                    nombre: "Snoopy Tradicional",
+                    categoria: "Snoopy",
+                    precio: 16.90,
+                    descripcion: "Fiel al clásico diseño de tira cómica con su característico collar rojo. 28 cm.",
+                    colorIcono: "#38BDF8",
+                    svg: `<svg viewBox="0 0 100 100" class="w-16 h-16"><rect width="100" height="100" rx="20" fill="#F0F9FF"/><circle cx="50" cy="50" r="28" fill="white"/><ellipse cx="62" cy="46" rx="4" ry="6" fill="#1E293B"/><ellipse cx="78" cy="54" rx="8" ry="12" fill="#1E293B"/><path d="M30 45 C20 40, 16 65, 32 60 Z" fill="#1E293B"/><rect x="42" y="75" width="16" height="5" rx="2" fill="#EF4444"/></svg>`
+                },
+                {
+                    id: "snoopy_joe",
+                    nombre: "Snoopy Joe Cool",
+                    categoria: "Snoopy",
+                    precio: 19.99,
+                    descripcion: "El alter ego más cool del vecindario, con sus gafas oscuras y sudadera.",
+                    colorIcono: "#6366F1",
+                    svg: `<svg viewBox="0 0 100 100" class="w-16 h-16"><rect width="100" height="100" rx="20" fill="#EEF2F6"/><circle cx="50" cy="50" r="28" fill="white"/><rect x="44" y="42" width="28" height="10" rx="3" fill="#1E293B"/><rect x="52" y="45" width="2" height="10" fill="#1E293B"/><ellipse cx="78" cy="54" rx="8" ry="12" fill="#1E293B"/><path d="M30 45 C20 40, 16 65, 32 60 Z" fill="#1E293B"/></svg>`
+                }
+            ],
+            ositos: [
+                {
+                    id: "oso_gigante",
+                    nombre: "Oso de Felpa Gigante",
+                    categoria: "Ositos",
+                    precio: 45.00,
+                    descripcion: "1 metro de puro amor. Extremadamente esponjoso y perfecto para abrazos.",
+                    colorIcono: "#B45309",
+                    svg: `<svg viewBox="0 0 100 100" class="w-16 h-16"><rect width="100" height="100" rx="20" fill="#FEF3C7"/><circle cx="50" cy="55" r="30" fill="#D97706"/><circle cx="28" cy="28" r="10" fill="#D97706"/><circle cx="72" cy="28" r="10" fill="#D97706"/><circle cx="50" cy="62" r="16" fill="#FCD34D"/><ellipse cx="40" cy="50" rx="3" ry="4" fill="#1E293B"/><ellipse cx="60" cy="50" rx="3" ry="4" fill="#1E293B"/><ellipse cx="50" cy="58" rx="4" ry="3" fill="#1E293B"/></svg>`
+                },
+                {
+                    id: "oso_corazon",
+                    nombre: "Osito con Corazón",
+                    categoria: "Ositos",
+                    precio: 15.00,
+                    descripcion: "Oso de tamaño mediano sosteniendo un tierno corazón rojo que dice 'Love'.",
+                    colorIcono: "#EF4444",
+                    svg: `<svg viewBox="0 0 100 100" class="w-16 h-16"><rect width="100" height="100" rx="20" fill="#FEE2E2"/><circle cx="50" cy="55" r="26" fill="#B45309"/><circle cx="30" cy="32" r="8" fill="#B45309"/><circle cx="70" cy="32" r="8" fill="#B45309"/><path d="M40 70 C30 60, 50 48, 50 68 C50 48, 70 60, 60 70 Z" fill="#EF4444"/><circle cx="50" cy="58" r="12" fill="#FDE68A"/><ellipse cx="44" cy="48" rx="2" ry="3" fill="#1E293B"/><ellipse cx="56" cy="48" rx="2" ry="3" fill="#1E293B"/><ellipse cx="50" cy="54" rx="3" ry="2" fill="#1E293B"/></svg>`
+                }
+            ],
+            otros: [
+                {
+                    id: "otro_stitch",
+                    nombre: "Stitch Espacial",
+                    categoria: "Otros",
+                    precio: 21.50,
+                    descripcion: "El extraterrestre más travieso y adorable, con grandes orejas flexibles.",
+                    colorIcono: "#0284C7",
+                    svg: `<svg viewBox="0 0 100 100" class="w-16 h-16"><rect width="100" height="100" rx="20" fill="#E0F2FE"/><circle cx="50" cy="55" r="28" fill="#0284C7"/><path d="M24 34 C10 10, 20 40, 28 42 Z" fill="#F472B6"/><path d="M76 34 C90 10, 80 40, 72 42 Z" fill="#F472B6"/><ellipse cx="40" cy="52" rx="4" ry="6" fill="#1E293B"/><ellipse cx="60" cy="52" rx="4" ry="6" fill="#1E293B"/><ellipse cx="50" cy="62" rx="10" ry="6" fill="#38BDF8"/><polygon points="48,58 52,58 50,61" fill="#1E293B"/></svg>`
+                },
+                {
+                    id: "otro_capibara",
+                    nombre: "Carpincho con Mochila",
+                    categoria: "Otros",
+                    precio: 19.00,
+                    descripcion: "Capibara de felpa súper blando cargando una mochilita de tortuga verde.",
+                    colorIcono: "#84CC16",
+                    svg: `<svg viewBox="0 0 100 100" class="w-16 h-16"><rect width="100" height="100" rx="20" fill="#ECFDF5"/><ellipse cx="50" cy="55" rx="30" ry="24" fill="#78350F"/><ellipse cx="32" cy="48" rx="4" ry="3" fill="#1E293B"/><circle cx="70" cy="62" r="10" fill="#10B981"/><ellipse cx="42" cy="56" rx="12" ry="8" fill="#92400E"/></svg>`
+                }
+            ]
+        };
+
+        // --- ESTADOS DE LA APLICACIÓN ---
+        let historialChat = [];
+        let carrito = [];
+        let envioCosto = 0.00;
+
+        // Elementos DOM
+        const contenedorMensajes = document.getElementById("contenedor-mensajes");
+        const formularioChat = document.getElementById("formulario-chat");
+        const inputUsuario = document.getElementById("input-usuario");
+        const itemsCarrito = document.getElementById("items-carrito");
+        const carritoVacio = document.getElementById("carrito-vacio");
+        const totalCarritoElem = document.getElementById("total-carrito");
+        const subtotalCarritoElem = document.getElementById("subtotal-carrito");
+        const envioCarritoElem = document.getElementById("envio-carrito");
+        const contadorCarritoElem = document.getElementById("contador-carrito");
+        const botonFinalizar = document.getElementById("boton-finalizar");
+        const modalCompra = document.getElementById("modal-compra");
+        const notificacion = document.getElementById("notificacion");
+
+        // --- FLUJO DE INICIALIZACIÓN ---
+        window.onload = function() {
+            // Inicializar iconos Lucide
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+            reiniciarChat();
+        };
+
+        // Reiniciar chat al estado de bienvenida
+        function reiniciarChat() {
+            contenedorMensajes.innerHTML = "";
+            historialChat = [];
+            
+            // Mensaje de bienvenida de Peluchín
+            insertarMensaje("bot", `¡Hola! Hola... ¡Bienvenido a <strong>Peluchilandia</strong>! 🧸✨<br>
+            Soy <strong>Peluchín Bot</strong>, tu asesor personal de suavidad. Mi misión es ayudarte a encontrar el compañero acolchado perfecto.<br><br>
+            Puedes preguntarme por peluches como <strong>Hello Kitty 🐱, Snoopy 🐶, Ositos 🐻</strong> o muchos otros. ¿De cuál te gustaría ver modelos y precios hoy?`);
+        }
+
+        // --- SISTEMA DE MENSAJERÍA ---
+        function insertarMensaje(remitente, texto, htmlExtra = "") {
+            const mensajeDiv = document.createElement("div");
+            mensajeDiv.className = `flex ${remitente === 'usuario' ? 'justify-end' : 'justify-start'} mb-4 animate-in slide-in-from-bottom-2 duration-200`;
+
+            const esBot = remitente === 'bot';
+            
+            mensajeDiv.innerHTML = `
+                <div class="flex items-start space-x-2.5 max-w-[85%]">
+                    ${esBot ? `
+                        <div class="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center shrink-0 border border-rose-200 mt-1">
+                            <svg viewBox="0 0 64 64" class="w-6 h-6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="32" cy="36" r="22" fill="#FDA4AF"/>
+                                <circle cx="32" cy="38" r="16" fill="#FFF"/>
+                                <circle cx="24" cy="30" r="2" fill="#1E293B"/>
+                                <circle cx="40" cy="30" r="2" fill="#1E293B"/>
+                                <ellipse cx="32" cy="36" rx="4" ry="3" fill="#F43F5E"/>
+                            </svg>
+                        </div>
+                    ` : ''}
+                    <div>
+                        <div class="p-3.5 rounded-2xl text-sm ${
+                            esBot 
+                            ? 'bg-white text-slate-700 rounded-tl-none border border-slate-100 shadow-sm' 
+                            : 'bg-rose-500 text-white rounded-tr-none shadow-md'
+                        }">
+                            <p class="leading-relaxed">${texto}</p>
+                        </div>
+                        ${htmlExtra}
+                        <span class="text-[10px] text-slate-400 mt-1 block px-1 ${!esBot ? 'text-right' : ''}">
+                            ${obtenerHoraActual()}
+                        </span>
+                    </div>
+                </div>
+            `;
+
+            contenedorMensajes.appendChild(mensajeDiv);
+            contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
+        }
+
+        function obtenerHoraActual() {
+            const ahora = new Date();
+            let horas = ahora.getHours();
+            let minutos = ahora.getMinutes();
+            const ampm = horas >= 12 ? 'PM' : 'AM';
+            horas = horas % 12;
+            horas = horas ? horas : 12; // el número '0' debería ser '12'
+            minutos = minutos < 10 ? '0'+minutos : minutos;
+            return horas + ':' + minutos + ' ' + ampm;
+        }
+
+        // --- CONTROLADORES DE ENTRADA ---
+        function procesarEnvioFormulario(e) {
+            e.preventDefault();
+            const texto = inputUsuario.value.trim();
+            if (!texto) return;
+
+            insertarMensaje("usuario", texto);
+            inputUsuario.value = "";
+            
+            // Simular respuesta después de un breve delay de escritura
+            mostrarPensandoYResponder(texto);
+        }
+
+        function enviarOpcion(opcion) {
+            insertarMensaje("usuario", `Quiero ver peluches de: ${opcion}`);
+            mostrarPensandoYResponder(opcion);
+        }
+
+        // Indicador de "escribiendo..." de Peluchín
+        function mostrarPensandoYResponder(consulta) {
+            const pensandoDiv = document.createElement("div");
+            pensandoDiv.id = "pensando-temp";
+            pensandoDiv.className = "flex justify-start mb-4";
+            pensandoDiv.innerHTML = `
+                <div class="flex items-start space-x-2.5 max-w-[85%]">
+                    <div class="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center shrink-0 border border-rose-200 mt-1">
+                        <svg viewBox="0 0 64 64" class="w-6 h-6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="32" cy="36" r="22" fill="#FDA4AF"/>
+                        </svg>
+                    </div>
+                    <div class="bg-white border border-slate-100 p-3 rounded-2xl rounded-tl-none shadow-sm flex items-center space-x-1">
+                        <span class="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+                        <span class="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                        <span class="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+                    </div>
+                </div>
+            `;
+            contenedorMensajes.appendChild(pensandoDiv);
+            contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
+
+            setTimeout(() => {
+                document.getElementById("pensando-temp")?.remove();
+                generarRespuestaBot(consulta);
+            }, 850);
+        }
+
+        // --- MOTOR DE RESPUESTAS AUTOMÁTICAS ---
+        function generarRespuestaBot(consulta) {
+            const consultaNormalizada = consulta.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            // 1. Caso: Hello Kitty
+            if (consultaNormalizada.includes("kitty") || consultaNormalizada.includes("cat") || consultaNormalizada.includes("gati")) {
+                const tarjetasHtml = generarTarjetasProductos(catalogo.kitty);
+                insertarMensaje("bot", `¡Súper elección! Los peluches de <strong>Hello Kitty</strong> son icónicos y sumamente tiernos. Aquí tienes los modelos que tenemos listos para ir a tu hogar:`, tarjetasHtml);
+                return;
+            }
+
+            // 2. Caso: Snoopy
+            if (consultaNormalizada.includes("snoopy") || consultaNormalizada.includes("perro") || consultaNormalizada.includes("charlie")) {
+                const tarjetasHtml = generarTarjetasProductos(catalogo.snoopy);
+                insertarMensaje("bot", `¡Me encanta Snoopy! 🐶 Es sumamente abrazable y con mucha personalidad. Aquí tienes nuestros modelos y precios actuales:`, tarjetasHtml);
+                return;
+            }
+
+            // 3. Caso: Ositos
+            if (consultaNormalizada.includes("os") || consultaNormalizada.includes("bear") || consultaNormalizada.includes("teddy")) {
+                const tarjetasHtml = generarTarjetasProductos(catalogo.ositos);
+                insertarMensaje("bot", `¡Los clásicos ositos nunca fallan! 🐻 Perfectos para regalar a alguien especial o consentirte a ti mismo:`, tarjetasHtml);
+                return;
+            }
+
+            // 4. Caso: Otros Peluches
+            if (consultaNormalizada.includes("otro") || consultaNormalizada.includes("mas") || consultaNormalizada.includes("stitch") || consultaNormalizada.includes("capibara") || consultaNormalizada.includes("carpincho")) {
+                const tarjetasHtml = generarTarjetasProductos(catalogo.otros);
+                insertarMensaje("bot", `✨ ¡Mira estas bellezas que tenemos disponibles! Son perfectos si buscas algo único y moderno:`, tarjetasHtml);
+                return;
+            }
+
+            // 5. Caso: Costos de Envío
+            if (consultaNormalizada.includes("envio") || consultaNormalizada.includes("cost") || consultaNormalizada.includes("entreg") || consultaNormalizada.includes("lleg")) {
+                insertarMensaje("bot", `🚚 <strong>Políticas de Envío de Peluchilandia:</strong><br><br>
+                • <strong>Envío a Domicilio Estándar:</strong> $3.50 (Llega en 24 a 48 horas laborables).<br>
+                • <strong>Envío Exprés (Misma ciudad):</strong> $5.00 (Llega el mismo día ordenando antes de las 2 PM).<br>
+                • <strong>Envío GRATIS:</strong> En compras mayores a $50.00.<br><br>
+                <em>¡Puedes agregar lo que desees al carrito y el sistema calculará tu envío automáticamente!</em>`);
+                return;
+            }
+
+            // 6. Respuestas de cortesía general
+            if (consultaNormalizada.includes("hola") || consultaNormalizada.includes("buenos") || consultaNormalizada.includes("tardes") || consultaNormalizada.includes("noches")) {
+                insertarMensaje("bot", `¡Hola de nuevo! 😊 ¿Qué peluche te gustaría cotizar o conocer el día de hoy? Puedo mostrarte los modelos de <strong>Hello Kitty, Snoopy u Ositos</strong>.`);
+                return;
+            }
+
+            if (consultaNormalizada.includes("gracias") || consultaNormalizada.includes("amable")) {
+                insertarMensaje("bot", `¡De nada! Es un placer ayudarte. Recuerda que puedes añadir peluches a tu carrito en cualquier momento y confirmar tu pedido. ❤️`);
+                return;
+            }
+
+            // Caso por defecto: No entendió
+            insertarMensaje("bot", `Vaya, no logré procesar esa consulta exacta. 🧸 ¿Me repites qué tipo de peluche buscas? Puedes hacer clic en los botones de respuesta rápida o escribir algo como: <strong>"Quiero ver Hello Kitty"</strong> o <strong>"Muéstrame Snoopy"</strong>.`);
+        }
+
+        // Generar dinámicamente el HTML de las tarjetas de productos dentro del chat
+        function generarTarjetasProductos(productos) {
+            let html = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 w-full max-w-lg">`;
+            
+            productos.forEach(p => {
+                html += `
+                    <div class="bg-white border border-rose-100 rounded-2xl p-3 flex flex-col justify-between shadow-sm hover:border-rose-200 transition-all">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="shrink-0">
+                                ${p.svg}
+                            </div>
+                            <div>
+                                <span class="bg-rose-50 text-rose-600 text-[10px] font-bold px-2 py-0.5 rounded-full">${p.categoria}</span>
+                                <h4 class="font-bold text-xs text-slate-800 mt-1">${p.nombre}</h4>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-slate-500 line-clamp-2 mb-3">${p.descripcion}</p>
+                        <div class="flex items-center justify-between border-t border-slate-50 pt-2 mt-auto">
+                            <span class="text-xs font-extrabold text-rose-500">$${p.precio.toFixed(2)}</span>
+                            <button onclick="agregarAlCarrito('${p.id}', '${p.nombre}', ${p.precio})" class="bg-rose-500 hover:bg-rose-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-all flex items-center space-x-1">
+                                <span>Agregar</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            return html;
+        }
+
+        // --- SISTEMA DEL CARRITO DE COMPRAS ---
+        function agregarAlCarrito(id, nombre, precio) {
+            // Verificar si el item ya está en el carrito
+            const itemExistente = carrito.find(item => item.id === id);
+
+            if (itemExistente) {
+                itemExistente.cantidad += 1;
+            } else {
+                carrito.push({
+                    id: id,
+                    nombre: nombre,
+                    precio: precio,
+                    cantidad: 1
+                });
+            }
+
+            mostrarNotificacion(`¡${nombre} se agregó al carrito! 🧸`);
+            actualizarCarritoUI();
+        }
+
+        function cambiarCantidad(id, cambio) {
+            const item = carrito.find(item => item.id === id);
+            if (!item) return;
+
+            item.cantidad += cambio;
+
+            if (item.cantidad <= 0) {
+                // Eliminar del carrito
+                carrito = carrito.filter(i => i.id !== id);
+                mostrarNotificacion(`Se quitó del carrito.`);
+            }
+
+            actualizarCarritoUI();
+        }
+
+        function actualizarCarritoUI() {
+            // Limpiar items anteriores
+            itemsCarrito.innerHTML = "";
+
+            if (carrito.length === 0) {
+                carritoVacio.style.display = "flex";
+                botonFinalizar.disabled = true;
+                botonFinalizar.className = "w-full bg-slate-200 text-slate-400 py-3 rounded-xl font-bold transition-all flex items-center justify-center space-x-2 cursor-not-allowed";
+                
+                subtotalCarritoElem.innerText = "$0.00";
+                envioCarritoElem.innerText = "$0.00";
+                totalCarritoElem.innerText = "$0.00";
+                contadorCarritoElem.innerText = "0";
+                return;
+            }
+
+            carritoVacio.style.display = "none";
+            botonFinalizar.disabled = false;
+            botonFinalizar.className = "w-full bg-rose-500 hover:bg-rose-600 active:scale-95 text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center space-x-2 shadow-md shadow-rose-100 cursor-pointer";
+
+            let subtotal = 0;
+            let cantidadTotal = 0;
+
+            carrito.forEach(item => {
+                subtotal += item.precio * item.cantidad;
+                cantidadTotal += item.cantidad;
+
+                // Generar elemento HTML para cada item en el carrito
+                const cartItemDiv = document.createElement("div");
+                cartItemDiv.className = "bg-white border border-slate-100 p-3 rounded-2xl flex justify-between items-center shadow-sm animate-in fade-in duration-200";
+                cartItemDiv.innerHTML = `
+                    <div class="flex-grow">
+                        <h4 class="font-bold text-xs text-slate-800">${item.nombre}</h4>
+                        <p class="text-xs text-rose-500 font-semibold mt-0.5">$${item.precio.toFixed(2)} c/u</p>
+                    </div>
+                    <div class="flex items-center space-x-2.5">
+                        <button onclick="cambiarCantidad('${item.id}', -1)" class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 hover:bg-rose-100 hover:text-rose-600 flex items-center justify-center text-xs font-bold transition-colors">-</button>
+                        <span class="text-xs font-bold text-slate-700">${item.cantidad}</span>
+                        <button onclick="cambiarCantidad('${item.id}', 1)" class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 hover:bg-rose-100 hover:text-rose-600 flex items-center justify-center text-xs font-bold transition-colors">+</button>
+                    </div>
+                `;
+                itemsCarrito.appendChild(cartItemDiv);
+            });
+
+            // Regla de envío gratis para compras superiores a $50
+            envioCosto = subtotal >= 50 ? 0.00 : 3.50;
+            const total = subtotal + envioCosto;
+
+            // Actualizar textos
+            subtotalCarritoElem.innerText = `$${subtotal.toFixed(2)}`;
+            envioCarritoElem.innerText = envioCosto === 0 ? "¡GRATIS! 🎉" : `$${envioCosto.toFixed(2)}`;
+            totalCarritoElem.innerText = `$${total.toFixed(2)}`;
+            contadorCarritoElem.innerText = cantidadTotal.toString();
+        }
+
+        // --- SISTEMA DE NOTIFICACIONES TOAST ---
+        function mostrarNotificacion(mensaje) {
+            const notiTexto = document.getElementById("notificacion-texto");
+            notiTexto.innerText = mensaje;
+
+            notificacion.classList.remove("translate-y-24", "opacity-0");
+            notificacion.classList.add("translate-y-0", "opacity-100");
+
+            setTimeout(() => {
+                notificacion.classList.add("translate-y-24", "opacity-0");
+                notificacion.classList.remove("translate-y-0", "opacity-100");
+            }, 3000);
+        }
+
+        // --- MODAL Y REDIRECCIÓN FINAL (WHATSAPP) ---
+        function abrirModalCompra() {
+            modalCompra.classList.remove("hidden");
+        }
+
+        function cerrarModalCompra() {
+            modalCompra.classList.add("hidden");
+        }
+
+        function finalizarPedido(e) {
+            e.preventDefault();
+            
+            const nombre = document.getElementById("nombre-cliente").value.trim();
+            const ciudad = document.getElementById("ciudad-cliente").value.trim();
+            const metodoPago = document.getElementById("pago-cliente").value;
+
+            if (!nombre || !ciudad) return;
+
+            // Construir el recibo de compra en texto formateado para WhatsApp
+            let mensajeWhatsApp = `*🌸 ¡NUEVO PEDIDO DE PELUCHES! 🌸*\n\n`;
+            mensajeWhatsApp += `*Cliente:* ${nombre}\n`;
+            mensajeWhatsApp += `*Ciudad:* ${ciudad}\n`;
+            mensajeWhatsApp += `*Método de Pago:* ${metodoPago}\n\n`;
+            mensajeWhatsApp += `--- *DETALLE DEL PEDIDO* ---\n`;
+
+            let subtotal = 0;
+            carrito.forEach(item => {
+                const totalPorItem = item.precio * item.cantidad;
+                subtotal += totalPorItem;
+                mensajeWhatsApp += `• ${item.cantidad}x ${item.nombre} ($${item.precio.toFixed(2)} c/u) -> *$${totalPorItem.toFixed(2)}*\n`;
+            });
+
+            const totalFinal = subtotal + envioCosto;
+            mensajeWhatsApp += `\n*Subtotal:* $${subtotal.toFixed(2)}\n`;
+            mensajeWhatsApp += `*Envío:* ${envioCosto === 0 ? '¡GRATIS!' : '$' + envioCosto.toFixed(2)}\n`;
+            mensajeWhatsApp += `*TOTAL A PAGAR:* *$${totalFinal.toFixed(2)}*\n\n`;
+            mensajeWhatsApp += `_Generado a través de Peluchilandia Web_ 🧸✨`;
+
+            // Codificar texto para URL
+            const urlFinal = `https://wa.me/593999999999?text=${encodeURIComponent(mensajeWhatsApp)}`; // Aquí iría tu número real de WhatsApp
+
+            // Simular respuesta exitosa en el chat y abrir enlace
+            cerrarModalCompra();
+            insertarMensaje("bot", `¡Súper, <strong>${nombre}</strong>! He generado tu orden de compra por un total de <strong>$${totalFinal.toFixed(2)}</strong>.<br><br>
+            Te estoy redirigiendo a WhatsApp para finalizar la entrega con un asesor humano. ¡Gracias por confiar en Peluchilandia! 🧸❤️`);
+            
+            // Vaciar Carrito
+            carrito = [];
+            actualizarCarritoUI();
+
+            // Abrir en nueva ventana/pestaña
+            setTimeout(() => {
+                window.open(urlFinal, '_blank');
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
